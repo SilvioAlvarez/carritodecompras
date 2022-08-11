@@ -1,10 +1,25 @@
-let contenedorProductos = document.getElementById(`mis-productos`)
+let stockProductos = [
+  {id : 1, nombre : "Cocina Aurora", cantidad : 1, precio : 110000, img : `./imagenes/cocina1.webp`},
+  {id : 2, nombre : "Cocina Volcan", cantidad : 1, precio : 125000, img : `./imagenes/cocina2.webp`},
+  {id : 3, nombre : "Heladera Patrick", cantidad : 1, precio : 155000, img : `./imagenes/heladera1.webp`},
+  {id : 4, nombre : "Heladera Gafa", cantidad : 1, precio : 165000, img : `./imagenes/heladera2.webp`},
+  {id : 5, nombre : "Bicicleta Olmo", cantidad : 1, precio : 45000, img : `./imagenes/bicicleta1.webp`},
+  {id : 6, nombre : "Bicicleta Anasi", cantidad : 1, precio : 55000, img : `./imagenes/bicicleta2.webp`},
+  {id : 7, nombre : "Set Herramientas", cantidad : 1, precio : 11000, img : `./imagenes/herramientas1.webp`},
+  {id : 8, nombre : "Herramienta", cantidad : 1, precio : 9000, img : `./imagenes/herramientas2.webp`},
+]
 
-const contenedorCarrito = document.getElementById(`llenar-carrito`)
+const contenedorProductos = document.getElementById('contenedor-productos')
 
-const botonVaciar = document.getElementById(`vaciar-carrito`)
-const contadorCarrito = document.getElementById(`contadorCarrito`)
+//TERCER PASO
 
+const contenedorCarrito = document.getElementById('carrito-contenedor')
+//SEXTO PASO
+const botonVaciar = document.getElementById('vaciar-carrito')
+//SEXTIMO PASO, MODIFICAR LOS CONTADORES
+const contadorCarrito = document.getElementById('contadorCarrito')
+
+//OCTAVO PASO
 const cantidad = document.getElementById('cantidad')
 const precioTotal = document.getElementById('precioTotal')
 const cantidadTotal = document.getElementById('cantidadTotal')
@@ -15,32 +30,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('carrito')){
         carrito = JSON.parse(localStorage.getItem('carrito'))
         actualizarCarrito()
-
-botonVaciar.addEventListener(`click`, () =>{
-carrito.length = 0
-actualizarCarrito ()
+    }
+})
+//SEXTO PASO
+botonVaciar.addEventListener('click', () => {
+    carrito.length = 0
+    actualizarCarrito()
 })
 
-misProductos.forEach((producto) => {  
-   const div = document.createElement(`div`)    
-    div.classList.add(`producto`)               
+//PRIMER PRIMER PASO, INYECTAR EL HTML
+stockProductos.forEach((producto) => {
+    const div = document.createElement('div')
+    div.classList.add('producto')
     div.innerHTML = `
-    <img src=${producto.img} alt="">
+    <img src=${producto.img} alt= "">
     <h3>${producto.nombre}</h3>
-    <p class="precioProducto">Precio : $ ${producto.precio}</p>                       
-    <button id="agregar ${producto.id}" class="boton-carrito">Agregar al carrito<i class="fas fa-shooping-card></i></button> 
-  `
-  contenedorProductos.appendChild(div)
+    <p class="precioProducto">Precio:$ ${producto.precio}</p>
+    <button id="agregar${producto.id}" class="boton-agregar">Agregar <i class="fas fa-shopping-cart"></i></button>
+    `
+    contenedorProductos.appendChild(div)
 
-  const boton = document.getElementById(`agregar ${producto.id}`)
+    //2 - SEGUNDO PASO, LUEGO DE QUE INSERTEMOS EL HTML EN EL DOM:
+    const boton = document.getElementById(`agregar${producto.id}`)
+    //Por cada elemento de mi array, creo un div, lo cuelgo, le pongo un id particular, una vez colgado
+    //le hago un get element by id (el de agregar) Obtengo el elemento y a dicho elemento le agregamos
+    //el add event listener
 
-  boton.addEventListener(`click`, () => {
-    agregarAlCarrito(producto.id)
-  })
+    boton.addEventListener('click', () => {
+        //esta funcion ejecuta el agregar el carrito con la id del producto
+        agregarAlCarrito(producto.id)
+        //
+    })
 })
+
+// 1- PRIMER PASO
+
+//AGREGAR AL CARRITO
 const agregarAlCarrito = (prodId) => {
- 
- const existe = carrito.some (prod => prod.id === prodId) //comprobar si el elemento ya existe en el carro
+
+    //PARA AUMENTAR LA CANTIDAD Y QUE NO SE REPITA
+    const existe = carrito.some (prod => prod.id === prodId) //comprobar si el elemento ya existe en el carro
 
     if (existe){ //SI YA ESTÁ EN EL CARRITO, ACTUALIZAMOS LA CANTIDAD
         const prod = carrito.map (prod => { //creamos un nuevo arreglo e iteramos sobre cada curso y cuando
@@ -50,24 +79,35 @@ const agregarAlCarrito = (prodId) => {
             }
         })
     } else { //EN CASO DE QUE NO ESTÉ, AGREGAMOS EL CURSO AL CARRITO
-        const item = misProductos.find((prod) => prod.id === prodId)//Trabajamos con las ID
+        const item = stockProductos.find((prod) => prod.id === prodId)//Trabajamos con las ID
         //Una vez obtenida la ID, lo que haremos es hacerle un push para agregarlo al carrito
         carrito.push(item)
     }
- actualizarCarrito() //LLAMAMOS A LA FUNCION QUE CREAMOS EN EL TERCER PASO. CADA VEZ Q SE 
+    //Va a buscar el item, agregarlo al carrito y llama a la funcion actualizarCarrito, que recorre
+    //el carrito y se ve.
+    actualizarCarrito() //LLAMAMOS A LA FUNCION QUE CREAMOS EN EL TERCER PASO. CADA VEZ Q SE 
     //MODIFICA EL CARRITO
 }
-}
+//agregarAlCarrito(1) //Le pasamos el ID por parametro. Tenemos que asigarle como evento esta funcion al boton
+//con el id de su producto correspondiente
 
+// 5 - QUINTO PASO
 const eliminarDelCarrito = (prodId) => {
-  const item = carrito.find((prod) => prod.id === prodId)
-  const indice = carrito.indexOf(item)
-  carrito.splice(indice,1)
-  actualizarCarrito()
+    const item = carrito.find((prod) => prod.id === prodId)
+
+    const indice = carrito.indexOf(item) //Busca el elemento q yo le pase y nos devuelve su indice.
+
+    carrito.splice(indice, 1) //Le pasamos el indice de mi elemento ITEM y borramos 
+    // un elemento 
+    actualizarCarrito() //LLAMAMOS A LA FUNCION QUE CREAMOS EN EL TERCER PASO. CADA VEZ Q SE 
+    //MODIFICA EL CARRITO
+    console.log(carrito)
 }
 
 const actualizarCarrito = () => {
-  contenedorCarrito.innerHTML = "" //Cada vez que yo llame a actualizarCarrito, lo primero q hago
+    //4- CUARTO PASO
+    //LOS APPENDS SE VAN ACUMULANDO CON LO QE HABIA ANTES
+    contenedorCarrito.innerHTML = "" //Cada vez que yo llame a actualizarCarrito, lo primero q hago
     //es borrar el nodo. Y despues recorro el array lo actualizo de nuevo y lo rellena con la info
     //actualizado
     //3 - TERCER PASO. AGREGAR AL MODAL. Recorremos sobre el array de carrito.
@@ -86,7 +126,14 @@ const actualizarCarrito = () => {
         contenedorCarrito.appendChild(div)
         
         localStorage.setItem('carrito', JSON.stringify(carrito))
-  contadorCarrito.innerText = carrito.length
-  precioTotal.innerText = carrito.reduce((acc,prod) => acc + prod.precio,0)
 
-    }
+    })
+    //SEPTIMO PASO
+    contadorCarrito.innerText = carrito.length // actualizamos con la longitud del carrito.
+    //OCTAVO PASO
+    console.log(carrito)
+    precioTotal.innerText = carrito.reduce((acc, prod) => acc + prod.cantidad * prod.precio, 0)
+    //Por cada producto q recorro en mi carrito, al acumulador le suma la propiedad precio, con el acumulador
+    //empezando en 0.
+
+}
